@@ -1,0 +1,8 @@
+versions:
+  - 221
+  - 213
+  - 202
+
+plugins:
+  - IdeaVim
+  - IdeaVim-Sneak
