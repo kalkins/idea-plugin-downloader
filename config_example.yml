@@ -1,8 +1,19 @@
+# Required fields:
+
+# The build numbers of the IDEA versions to target. Can be a full build number or just the major version
 versions:
   - 221
   - 213
   - 202
 
+
+# Optional fields:
+
+# A list of plugins to download. Any transitive dependency will also be downloaded.
+# If this is empty or not provided, all available plugins are downloaded (not recommended).
 plugins:
   - IdeaVim
   - IdeaVim-Sneak
+
+# The URL to the plugins repository. Defaults to the standard Jetbrains repository.
+mirror_url: https://plugins.jetbrains.com
