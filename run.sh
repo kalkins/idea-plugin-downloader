@@ -20,8 +20,12 @@ if [ ! -d ./data ]; then
     chown "$user:$group" ./data
 fi
 
-USER_ID=$user GROUP_ID=$group docker build -t idea-plugin-downloader . --build-arg CONFIG_FILE=$config_file
-USER_ID=$user GROUP_ID=$group docker run --rm --mount "type=bind,src=${PWD}/data,dst=/app/output" idea-plugin-downloader
+docker build -t idea-plugin-downloader . \
+       --build-arg CONFIG_FILE=$config_file \
+       --build-arg UID=$user \
+       --build-arg GID=$group
+
+docker run --rm --mount "type=bind,src=${PWD}/data,dst=/app/output" idea-plugin-downloader
 
 if [ $? -eq 0 ]; then
     echo "Creating a tarball of the plugins"
