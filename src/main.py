@@ -81,12 +81,15 @@ def compile_plugin_list(config):
 def download_plugins(config):
     xml_root = ET.Element('plugins')
 
+    plugin_dir = config.output_path / 'plugins'
+    plugin_dir.mkdir(exist_ok=True, parents=True)
+
     for plugin_id, version_dict in compile_plugin_list(config).items():
         for plugin_version, metadata in version_dict.items():
             url = f'{config.mirror}/plugin/download?{urlencode({"pluginId": plugin_id, "version": plugin_version})}'
             logger.debug(f'Downloading plugin {plugin_id} version {plugin_version} from {url}')
 
-            path = config.output_path / f'{plugin_id}-{plugin_version}.zip'
+            path = plugin_dir / f'{plugin_id}-{plugin_version}.zip'
             if path.is_file():
                 logger.info(f'Plugin {plugin_id} version {plugin_version} already downloaded.')
             else:
@@ -99,7 +102,7 @@ def download_plugins(config):
                 with open(path, 'wb') as f:
                     f.write(response.read())
 
-            xml_plugin = ET.SubElement(xml_root, 'plugin', attrib={'id': metadata['id'], 'version': metadata['version'], 'url': path.name})
+            xml_plugin = ET.SubElement(xml_root, 'plugin', attrib={'id': metadata['id'], 'version': metadata['version'], 'url': str(path.relative_to(config.output_path))})
             ET.SubElement(xml_plugin, 'idea-version', attrib=metadata['idea_version'])
             ET.SubElement(xml_plugin, 'name').text = metadata['name']
             ET.SubElement(xml_plugin, 'description').text = metadata['description']
