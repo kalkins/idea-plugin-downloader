@@ -1,11 +1,11 @@
 import argparse
 import logging
 import yaml
-import re
 from xml.etree import ElementTree as ET
 from urllib import request
 from urllib.parse import urlencode
 from pathlib import Path
+
 
 class Config():
     def __init__(self, args):
@@ -18,6 +18,7 @@ class Config():
         self.mirror = d.get('mirror_url', 'https://plugins.jetbrains.com')
 
         self.output_path = args.output_path
+
 
 def fetch_available_plugins(version, config):
     url = f'{config.mirror}/plugins/list/?build={version}'
@@ -37,6 +38,7 @@ def fetch_available_plugins(version, config):
         }
         for plugin in xml.getroot().iter('idea-plugin')
     ]
+
 
 def compile_plugin_list(config):
     plugin_list = {}
@@ -75,6 +77,7 @@ def compile_plugin_list(config):
 
     return plugin_list
 
+
 def download_plugins(config):
     xml_root = ET.Element('plugins')
 
@@ -106,14 +109,14 @@ def download_plugins(config):
     tree = ET.ElementTree(xml_root)
     ET.indent(tree)
     tree.write(config.output_path / 'updatePlugins.xml')
-    #with open(config.output_path / 'updatePlugins.xml', 'wb') as f:
-    #    f.write(ET.tostring())
 
     logger.info('Updated updatePlugins.xml')
+
 
 def main(args):
     config = Config(args)
     download_plugins(config)
+
 
 logger = logging.getLogger(__name__)
 
