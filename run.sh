@@ -3,10 +3,10 @@
 user=$(stat -c "%u" .)
 group=$(stat -c "%g" .)
 
-if [ -f config.yml ]; then
-    config_file=config.yml
-elif [ -f config_docker.yml ]; then
+if [ -f config_docker.yml ]; then
     config_file=config_docker.yml
+elif [ -f config.yml ]; then
+    config_file=config.yml
 elif [ -f config_example.yml ]; then
     echo "Using example config file"
     config_file=config_example.yml
