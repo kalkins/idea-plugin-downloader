@@ -13,7 +13,7 @@ class Config():
         logger.debug(f'Loading config: {d}')
 
         self.versions = d['versions']
-        self.plugins = d['plugins']
+        self.plugins = d.get('plugins', [])
 
         self.mirror = d.get('mirror_url', 'https://plugins.jetbrains.com')
 
@@ -73,7 +73,12 @@ def compile_plugin_list(config):
                 add_plugins(metadata['dependencies'])
                 add_plugins(metadata['optional_dependencies'])
 
-        add_plugins(config.plugins)
+        if config.plugins:
+            add_plugins(config.plugins)
+        else:
+            # Add all available plugins
+            for p in available_plugins:
+                plugin_list.setdefault(p['id'], {}).setdefault(p['version'], p)
 
     return plugin_list
 
